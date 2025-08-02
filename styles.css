@@ -1,0 +1,203 @@
+/* Variáveis de cores */
+:root {
+  --md-primary: #1976D2;    /* Azul principal */
+  --md-primary-dark: #1565C0;
+  --md-secondary: #FF9800;  /* Laranja */
+  --md-secondary-dark: #F57C00;
+  --md-background: #FFFFFF;
+  --md-surface: #FFFFFF;
+  --md-error: #B00020;
+  --md-text-primary: #212121;
+  --md-text-secondary: #757575;
+  --md-text-disabled: #9E9E9E;
+  --md-elevation-1: 0 2px 4px rgba(0,0,0,0.1);
+  --md-elevation-2: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Reset e estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--md-background);
+  color: var(--md-text-primary);
+  line-height: 1.5;
+}
+
+/* Layout principal */
+.app-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 64px 1fr;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  grid-column: 1 / -1;
+  background-color: var(--md-text-primary);
+  color: white;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--md-elevation-1);
+  z-index: 2;
+  height: 64px;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+
+
+/* Navigation Drawer */
+.nav-drawer {
+  background-color: var(--md-primary);
+  color: white;
+  padding: 16px 0;
+  box-shadow: var(--md-elevation-2);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+  background-color: var(--md-primary-dark);
+}
+
+.nav-item.active {
+  background-color: var(--md-secondary);
+}
+
+.nav-item i {
+  margin-right: 16px;
+}
+
+/* Content Area */
+.content {
+  padding: 24px;
+  background-color: var(--md-surface);
+}
+
+/* Cards e componentes Material */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--md-elevation-1);
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--md-text-secondary);
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--md-text-disabled);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--md-primary);
+}
+
+/* Botões */
+.button {
+  background-color: var(--md-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: var(--md-primary-dark);
+}
+
+.button.secondary {
+  background-color: var(--md-secondary);
+}
+
+.button.secondary:hover {
+  background-color: var(--md-secondary-dark);
+}
+
+/* Tabela de produtos */
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--md-text-disabled);
+}
+
+.products-table th {
+  color: var(--md-text-secondary);
+  font-weight: 500;
+}
+
+.product-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--md-text-disabled);
+  background-color: #f5f5f5;
+}
+
+/* Utilitários */
+.text-center {
+  text-align: center;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.mb-2 {
+  margin-bottom: 16px;
+}

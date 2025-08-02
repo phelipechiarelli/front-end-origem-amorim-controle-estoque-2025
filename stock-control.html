@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Stock</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <img src="img/best_stock_logo.png" alt="Best Stock Logo" class="header-logo">
+                <h1 class="header-title">Best Stock</h1>
+            </div>
+            <div class="user-profile">
+                <span class="material-icons">notifications</span>
+                <span class="material-icons">account_circle</span>
+            </div>
+        </header>
+
+        <!-- Navigation Drawer -->
+        <nav class="nav-drawer">
+            <a href="#" class="nav-item active" data-page="lookup">
+                <span class="material-icons">search</span>
+                Consulta de Produtos
+            </a>
+            <a href="#" class="nav-item" data-page="create">
+                <span class="material-icons">add_circle</span>
+                Criar Produto
+            </a>
+            <a href="#" class="nav-item" data-page="update">
+                <span class="material-icons">edit</span>
+                Atualizar Produto
+            </a>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Consulta de Produtos -->
+            <div class="page active" id="lookup-page">
+                <h2>Consulta de Produtos</h2>
+                <div class="card">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Imagem</th>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Quantidade</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-list">
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Criar Produto -->
+            <div class="page" id="create-page" style="display: none;">
+                <h2>Criar Novo Produto</h2>
+                <div class="card">
+                    <form id="create-product-form">
+                        <div class="form-field">
+                            <label for="create-name">Nome do Produto</label>
+                            <input type="text" id="create-name" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="create-description">Descrição</label>
+                            <textarea id="create-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-field">
+                            <label for="create-quantity">Quantidade</label>
+                            <input type="number" id="create-quantity" min="0" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="create-price">Preço</label>
+                            <input type="number" id="create-price" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="create-image">URL da Imagem</label>
+                            <input type="url" id="create-image" required>
+                        </div>
+                        <button type="submit" class="button">Criar Produto</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Atualizar Produto -->
+            <div class="page" id="update-page" style="display: none;">
+                <h2>Atualizar Produto</h2>
+                <div class="card">
+                    <form id="update-product-form">
+                        <div class="form-field">
+                            <label for="update-id">ID do Produto</label>
+                            <input type="number" id="update-id" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="update-name">Nome do Produto</label>
+                            <input type="text" id="update-name" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="update-description">Descrição</label>
+                            <textarea id="update-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-field">
+                            <label for="update-quantity">Quantidade</label>
+                            <input type="number" id="update-quantity" min="0" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="update-price">Preço</label>
+                            <input type="number" id="update-price" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="update-image">URL da Imagem</label>
+                            <input type="url" id="update-image" required>
+                        </div>
+                        <button type="submit" class="button">Atualizar Produto</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import ApiService from './api.js';
+
+        // Gerenciamento de páginas
+        const pages = document.querySelectorAll('.page');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.style.display = page.id === pageId ? 'block' : 'none';
+            });
+
+            navItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.page === pageId.replace('-page', ''));
+            });
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(`${item.dataset.page}-page`);
+            });
+        });
+
+        // Carregar lista de produtos
+        async function loadProducts() {
+            try {
+                const products = await ApiService.getAllProducts();
+                const tbody = document.getElementById('products-list');
+                tbody.innerHTML = products.map(product => `
+                    <tr>
+                        <td>
+                            <img src="${product.image || 'img/best_stock_logo.png'}" alt="${product.name}" 
+                                onerror="this.src='img/best_stock_logo.png'"
+                                class="product-thumbnail">
+                        </td>
+                        <td>${product.id}</td>
+                        <td>${product.name}</td>
+                        <td>${product.description}</td>
+                        <td>${product.qnt_products}</td>
+                        <td>R$ ${product.price.toFixed(2)}</td>
+                        <td>
+                            <button class="button secondary" onclick="editProduct(${product.id})">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="button" onclick="deleteProduct(${product.id})">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+            }
+        }
+
+        // Criar produto
+        document.getElementById('create-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const productData = {
+                    name: document.getElementById('create-name').value,
+                    description: document.getElementById('create-description').value,
+                    qnt_products: parseInt(document.getElementById('create-quantity').value),
+                    price: parseFloat(document.getElementById('create-price').value),
+                    image: document.getElementById('create-image').value
+                };
+
+                await ApiService.createProduct(productData);
+                alert('Produto criado com sucesso!');
+                e.target.reset();
+                loadProducts();
+            } catch (error) {
+                alert('Erro ao criar produto: ' + error.message);
+            }
+        });
+
+        // Atualizar produto
+        document.getElementById('update-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const productData = {
+                    id: parseInt(document.getElementById('update-id').value),
+                    name: document.getElementById('update-name').value,
+                    description: document.getElementById('update-description').value,
+                    qnt_products: parseInt(document.getElementById('update-quantity').value),
+                    price: parseFloat(document.getElementById('update-price').value),
+                    image: document.getElementById('update-image').value
+                };
+
+                await ApiService.updateProduct(productData);
+                alert('Produto atualizado com sucesso!');
+                e.target.reset();
+                loadProducts();
+            } catch (error) {
+                alert('Erro ao atualizar produto: ' + error.message);
+            }
+        });
+
+        // Funções globais para edição e deleção
+        window.editProduct = async (id) => {
+            try {
+                const product = await ApiService.getProductById(id);
+                document.getElementById('update-id').value = product.id;
+                document.getElementById('update-name').value = product.name;
+                document.getElementById('update-description').value = product.description;
+                document.getElementById('update-quantity').value = product.qnt_products;
+                document.getElementById('update-price').value = product.price;
+                document.getElementById('update-image').value = product.image;
+                showPage('update-page');
+            } catch (error) {
+                alert('Erro ao carregar produto: ' + error.message);
+            }
+        };
+
+        window.deleteProduct = async (id) => {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                try {
+                    await ApiService.deleteProductById(id);
+                    alert('Produto excluído com sucesso!');
+                    loadProducts();
+                } catch (error) {
+                    alert('Erro ao excluir produto: ' + error.message);
+                }
+            }
+        };
+
+        // Carregar produtos inicialmente
+        loadProducts();
+    </script>
+</body>
+</html>

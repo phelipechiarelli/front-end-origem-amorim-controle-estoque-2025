@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Consumo de API - Exemplo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    input, button { margin: 0.5rem 0; padding: 0.5rem; }
+    button { cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 4px; }
+    button:hover { background: #45a049; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto; }
+    .error { color: red; }
+    .success { color: green; }
+    .loading { opacity: 0.5; }
+    #status { position: fixed; top: 1rem; right: 1rem; padding: 1rem; background: #f4f4f4; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div id="status">Status da API: Verificando...</div>
+  <h1>Consumo de API - Produtos</h1>
+
+  <section>
+    <h2>Listar Produtos</h2>
+    <button onclick="listarProdutos()">GET /products</button>
+    <pre id="produtos"></pre>
+  </section>
+
+  <section>
+    <h2>Buscar Produto por ID</h2>
+    <input type="number" id="buscarId" placeholder="ID do produto">
+    <button onclick="buscarProdutoPorId()">GET /{id}/product</button>
+    <pre id="produto"></pre>
+  </section>
+
+  <section>
+    <h2>Criar Produto</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 300px;">
+      <input type="text" id="nomeNovo" placeholder="Nome do produto">
+      <textarea id="descricaoProduto" placeholder="Descrição do produto" rows="3"></textarea>
+      <input type="number" id="quantidadeProduto" placeholder="Quantidade de produtos" min="0" step="1">
+      <input type="number" id="precoProduto" placeholder="Preço do produto" min="0" step="0.01">
+      <input type="text" id="imagemProduto" placeholder="URL da imagem do produto">
+    </div>
+    <button onclick="criarProduto()" style="margin-top: 10px;">POST /product</button>
+    <pre id="novoProduto"></pre>
+  </section>
+
+  <section>
+    <h2>Atualizar Produto</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 300px;">
+      <input type="number" id="atualizarId" placeholder="ID do produto" required>
+      <input type="text" id="atualizarNome" placeholder="Nome do produto">
+      <textarea id="atualizarDescricao" placeholder="Descrição do produto" rows="3"></textarea>
+      <input type="number" id="atualizarQuantidade" placeholder="Quantidade de produtos" min="0" step="1">
+      <input type="number" id="atualizarPreco" placeholder="Preço do produto" min="0" step="0.01">
+      <input type="text" id="atualizarImagem" placeholder="URL da imagem do produto">
+    </div>
+    <button onclick="atualizarProduto()" style="margin-top: 10px;">PUT /update/product</button>
+    <pre id="produtoAtualizado"></pre>
+  </section>
+
+  <section>
+    <h2>Deletar Produto</h2>
+    <input type="number" id="deletarId" placeholder="ID do produto">
+    <button onclick="deletarProduto()">DELETE /{id}/product</button>
+    <pre id="produtoDeletado"></pre>
+  </section>
+
+  <script type="module">
+    // Dica: para rodar este HTML como módulo ES, utilize um servidor local (ex: Live Server, http-server, vite, etc)
+    let ApiService;
+    try {
+      const mod = await import('./api.js');
+      ApiService = mod.default;
+      
+      // Teste inicial da API
+      const statusEl = document.getElementById('status');
+      try {
+        await ApiService.getAllProducts();
+        statusEl.textContent = 'Status da API: Online';
+        statusEl.className = 'success';
+      } catch (e) {
+        statusEl.textContent = 'Status da API: Offline ou com erro';
+        statusEl.className = 'error';
+        console.error('Erro ao verificar API:', e);
+      }
+    } catch (err) {
+      document.body.innerHTML = '<b class="error">Erro ao importar api.js. Rode este projeto em um servidor local (ex: Live Server).<br>Erro: ' + err.message + '</b>';
+      throw err;
+    }
+
+    // Função helper para UI
+    function updateUI(element, isLoading = false, content = '', isError = false) {
+      element.className = isLoading ? 'loading' : isError ? 'error' : 'success';
+      element.textContent = content;
+    }
+
+    async function listarProdutos() {
+      const el = document.getElementById('produtos');
+      updateUI(el, true, 'Carregando...');
+      try {
+        const data = await ApiService.getAllProducts();
+        updateUI(el, false, JSON.stringify(data, null, 2));
+      } catch (e) {
+        updateUI(el, false, 'Erro: ' + e.message, true);
+      }
+    }
+
+    async function buscarProdutoPorId() {
+      const id = document.getElementById('buscarId').value;
+      const el = document.getElementById('produto');
+      updateUI(el, true, 'Carregando...');
+      try {
+        const data = await ApiService.getProductById(id);
+        updateUI(el, false, JSON.stringify(data, null, 2));
+      } catch (e) {
+        updateUI(el, false, 'Erro: ' + e.message, true);
+      }
+    }
+
+    async function criarProduto() {
+      const el = document.getElementById('novoProduto');
+      updateUI(el, true, 'Criando produto...');
+      try {
+        const produtoData = {
+          name: document.getElementById('nomeNovo').value,
+          description: document.getElementById('descricaoProduto').value,
+          qnt_products: parseInt(document.getElementById('quantidadeProduto').value),
+          price: parseFloat(document.getElementById('precoProduto').value),
+          image: document.getElementById('imagemProduto').value
+        };
+        
+        const data = await ApiService.createProduct(produtoData);
+        updateUI(el, false, JSON.stringify(data, null, 2));
+        
+        // Limpa os campos após sucesso
+        document.getElementById('nomeNovo').value = '';
+        document.getElementById('descricaoProduto').value = '';
+        document.getElementById('quantidadeProduto').value = '';
+        document.getElementById('precoProduto').value = '';
+        document.getElementById('imagemProduto').value = '';
+      } catch (e) {
+        updateUI(el, false, 'Erro: ' + e.message, true);
+      }
+    }
+
+    async function atualizarProduto() {
+      const el = document.getElementById('produtoAtualizado');
+      updateUI(el, true, 'Atualizando produto...');
+      try {
+        const produtoData = {
+          id: parseInt(document.getElementById('atualizarId').value),
+          name: document.getElementById('atualizarNome').value,
+          description: document.getElementById('atualizarDescricao').value,
+          qnt_products: parseInt(document.getElementById('atualizarQuantidade').value),
+          price: parseFloat(document.getElementById('atualizarPreco').value),
+          image: document.getElementById('atualizarImagem').value
+        };
+        
+        const data = await ApiService.updateProduct(produtoData);
+        updateUI(el, false, JSON.stringify(data, null, 2));
+        
+        // Limpa os campos após sucesso
+        document.getElementById('atualizarId').value = '';
+        document.getElementById('atualizarNome').value = '';
+        document.getElementById('atualizarDescricao').value = '';
+        document.getElementById('atualizarQuantidade').value = '';
+        document.getElementById('atualizarPreco').value = '';
+        document.getElementById('atualizarImagem').value = '';
+      } catch (e) {
+        updateUI(el, false, 'Erro: ' + e.message, true);
+      }
+    }
+
+    async function deletarProduto() {
+      const id = document.getElementById('deletarId').value;
+      const el = document.getElementById('produtoDeletado');
+      updateUI(el, true, 'Deletando produto...');
+      try {
+        const data = await ApiService.deleteProductById(id);
+        updateUI(el, false, JSON.stringify(data, null, 2));
+      } catch (e) {
+        updateUI(el, false, 'Erro: ' + e.message, true);
+      }
+    }
+
+    // Torna as funções acessíveis globalmente
+    window.listarProdutos = listarProdutos;
+    window.buscarProdutoPorId = buscarProdutoPorId;
+    window.criarProduto = criarProduto;
+    window.atualizarProduto = atualizarProduto;
+    window.deletarProduto = deletarProduto;
+  </script>
+</body>
+</html>
