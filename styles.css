@@ -14,6 +14,118 @@
   --md-elevation-2: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+[data-theme="dark"] {
+  --md-background: #121212;
+  --md-surface: #1E1E1E;
+  --md-text-primary: #FFFFFF;
+  --md-text-secondary: #B0B0B0;
+  --md-text-disabled: #757575;
+  --md-elevation-1: 0 2px 4px rgba(0,0,0,0.2);
+  --md-elevation-2: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Estilos do Resumo do Estoque */
+.stock-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.summary-icon {
+  background-color: var(--md-primary);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-icon .material-icons {
+  font-size: 24px;
+}
+
+.summary-content h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--md-text-secondary);
+}
+
+.summary-content p {
+  margin: 8px 0 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--md-text-primary);
+}
+
+/* Estilos do Switch de Tema */
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 16px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--md-secondary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 /* Reset e estilos base */
 * {
   margin: 0;
@@ -162,6 +274,14 @@ body {
   background-color: var(--md-secondary-dark);
 }
 
+.button.delete {
+  background-color: #f44336;  /* Vermelho do Material Design */
+}
+
+.button.delete:hover {
+  background-color: #d32f2f;  /* Vermelho escuro do Material Design */
+}
+
 /* Tabela de produtos */
 .products-table {
   width: 100%;
@@ -178,6 +298,67 @@ body {
 .products-table th {
   color: var(--md-text-secondary);
   font-weight: 500;
+}
+
+/* Estado vazio da tabela */
+.empty-state {
+  text-align: center;
+  padding: 64px 24px !important;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
+  background-color: var(--md-surface);
+  border-radius: 8px;
+  box-shadow: var(--md-elevation-1);
+}
+
+.empty-state-icon {
+  font-size: 64px !important;
+  color: var(--md-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state-content h3 {
+  color: var(--md-text-primary);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.empty-state-content p {
+  color: var(--md-text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+  max-width: 300px;
+}
+
+.empty-state-content .button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+.empty-state-content .primary-button {
+  background-color: var(--md-primary);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.empty-state-content .primary-button:hover {
+  background-color: var(--md-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-2);
+}
+
+.empty-state-content.error .empty-state-icon {
+  color: var(--md-error);
 }
 
 .product-thumbnail {
@@ -200,4 +381,135 @@ body {
 
 .mb-2 {
   margin-bottom: 16px;
+}
+
+/* Estilos da página Sobre */
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+/* Estilos do Resumo */
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary-card {
+  background-color: var(--md-surface);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: var(--md-elevation-1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.summary-icon {
+  min-width: 48px;
+  min-height: 48px;
+  width: 48px;
+  height: 48px;
+  background-color: #4CAF50;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-icon .material-icons {
+  font-size: 24px;
+  color: white;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-info h3 {
+  color: var(--md-text-secondary);
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.summary-info p {
+  color: var(--md-text-primary);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.products-summary {
+  margin-top: 24px;
+}
+
+.products-summary h3 {
+  color: var(--md-text-primary);
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid var(--md-text-disabled);
+}
+
+.about-content h3 {
+  color: var(--md-primary);
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+}
+
+.about-content h4 {
+  color: var(--md-text-primary);
+  margin: 24px 0 16px;
+  font-size: 1.2rem;
+}
+
+.about-content p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+  color: var(--md-text-secondary);
+}
+
+.about-content ul {
+  margin-bottom: 16px;
+  padding-left: 24px;
+}
+
+.about-content li {
+  margin-bottom: 8px;
+  color: var(--md-text-secondary);
+}
+
+.about-footer {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--md-text-disabled);
+  text-align: center;
+}
+
+.signature {
+  font-style: italic;
+  color: var(--md-text-secondary);
+  margin-bottom: 32px;
+}
+
+.origem-logo {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.origem-logo img {
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
 }

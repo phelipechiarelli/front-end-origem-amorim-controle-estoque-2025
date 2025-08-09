@@ -79,7 +79,7 @@ const ApiService = {
     return this.get(`/${productId}/product`);
   },
 
-  // PUT /update/product
+  // PUT /update/product?id=X
   updateProduct: function (data) {
     if (!data) throw new Error('Dados do produto são obrigatórios');
     if (!data.id) throw new Error('O ID do produto é obrigatório');
@@ -91,9 +91,8 @@ const ApiService = {
     if (typeof data.price !== 'number') throw new Error('O campo price deve ser um número');
     if (typeof data.image !== 'string') throw new Error('O campo image deve ser uma string');
 
-    // Formato esperado do objeto
+    // Formato esperado do objeto (sem incluir o ID, que vai na URL)
     const productData = {
-      id: data.id,
       name: data.name,
       description: data.description,
       qnt_products: data.qnt_products,
@@ -101,7 +100,8 @@ const ApiService = {
       image: data.image
     };
 
-    return this.put('/update/product', productData);
+    // Adiciona o ID como query parameter na URL
+    return this.put(`/update/product?id=${data.id}`, productData);
   },
 
   // POST /product

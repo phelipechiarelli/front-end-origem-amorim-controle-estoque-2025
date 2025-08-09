@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Stock</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="theme.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
@@ -16,9 +17,15 @@
                 <img src="img/best_stock_logo.png" alt="Best Stock Logo" class="header-logo">
                 <h1 class="header-title">Best Stock</h1>
             </div>
+            <div class="theme-toggle">
+                <span id="theme-text">Tema claro</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-switch">
+                    <span class="slider"></span>
+                </label>
+            </div>
             <div class="user-profile">
-                <span class="material-icons">notifications</span>
-                <span class="material-icons">account_circle</span>
+
             </div>
         </header>
 
@@ -35,6 +42,14 @@
             <a href="#" class="nav-item" data-page="update">
                 <span class="material-icons">edit</span>
                 Atualizar Produto
+            </a>
+            <a href="#" class="nav-item" data-page="summary">
+                <span class="material-icons">analytics</span>
+                Resumo
+            </a>
+            <a href="#" class="nav-item" data-page="about">
+                <span class="material-icons">help</span>
+                Sobre
             </a>
         </nav>
 
@@ -126,6 +141,89 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Resumo -->
+            <div class="page" id="summary-page" style="display: none;">
+                <h2>Resumo do Estoque</h2>
+                <div class="card summary-container">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <span class="material-icons">inventory</span>
+                        </div>
+                        <div class="summary-info">
+                            <h3>Total de Produtos</h3>
+                            <p id="total-quantity">Carregando...</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <span class="material-icons">paid</span>
+                        </div>
+                        <div class="summary-info">
+                            <h3>Valor Total em Estoque</h3>
+                            <p id="total-value">Carregando...</p>
+                        </div>
+                    </div>
+                    <div class="products-summary">
+                        <h3>Detalhamento por Produto</h3>
+                        <div class="table-container">
+                            <table class="products-table">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Unitário</th>
+                                        <th>Valor Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary-list">
+                                    <!-- Preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sobre -->
+            <div class="page" id="about-page" style="display: none;">
+                <h2>Sobre o Projeto</h2>
+                <div class="card about-content">
+                    <h3>Projeto de Conclusão do Curso de Front-end</h3>
+                    
+                    <p>Este sistema de controle de estoque representa a culminação do Curso Básico de Front-end oferecido pela ONG Origem Amorim. O projeto demonstra a aplicação prática dos conhecimentos adquiridos em HTML, CSS e JavaScript, as três tecnologias fundamentais para o desenvolvimento web moderno.</p>
+
+                    <p>O curso, ministrado com dedicação e compromisso, é uma iniciativa que visa democratizar o acesso ao conhecimento tecnológico, oferecendo oportunidades de aprendizado para jovens interessados em ingressar no mundo da programação.</p>
+
+                    <h4>Tecnologias Aplicadas</h4>
+                    <ul>
+                        <li><strong>HTML:</strong> Estruturação semântica e organização do conteúdo</li>
+                        <li><strong>CSS:</strong> Estilização moderna com Material Design</li>
+                        <li><strong>JavaScript:</strong> Programação dinâmica e integração com APIs</li>
+                    </ul>
+
+                    <h4>Importância do Projeto</h4>
+                    <p>Este projeto é fruto do empenho e dedicação dos alunos que perseveraram até o final do curso, demonstrando que com determinação e suporte adequado, é possível transformar conhecimento em resultados práticos.</p>
+
+                    <h4>Impacto na Vida dos Jovens</h4>
+                    <p>O aprendizado de tecnologia tem um papel transformador na vida dos jovens. Além de abrir portas para oportunidades profissionais em um mercado em constante crescimento, desenvolve habilidades essenciais como:</p>
+                    <ul>
+                        <li>Pensamento lógico e resolução de problemas</li>
+                        <li>Criatividade e inovação</li>
+                        <li>Trabalho em equipe e colaboração</li>
+                        <li>Autonomia e aprendizado contínuo</li>
+                    </ul>
+
+                    <p>A ONG Origem Amorim acredita que a educação tecnológica é uma ferramenta poderosa de transformação social, capaz de criar novas perspectivas e oportunidades para jovens talentos.</p>
+
+                    <div class="about-footer">
+                        <p class="signature">Desenvolvido com 💻 e ❤️ por Bryan Gomes da Glória, Julio Araujo dos Santos, Pedro Eduardo Gomes da Silva e Victhor Hugo Santos dos Vasconcelos - Turma 10 - 2025</p>
+                        <div class="origem-logo">
+                            <img src="img/ORIGEM-LOGO-2019-1.png" alt="Logo Origem Amorim">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -158,6 +256,27 @@
             try {
                 const products = await ApiService.getAllProducts();
                 const tbody = document.getElementById('products-list');
+                
+                if (!products || products.length === 0) {
+                    // Se não houver produtos, exibe mensagem e botão de atalho
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <div class="empty-state-content">
+                                    <span class="material-icons empty-state-icon">inventory</span>
+                                    <p>Nenhum produto cadastrado</p>
+                                    <button class="button" onclick="navigateToCreate()">
+                                        <span class="material-icons">add_circle</span>
+                                        Criar Novo Produto
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                // Se houver produtos, exibe a tabela normal
                 tbody.innerHTML = products.map(product => `
                     <tr>
                         <td>
@@ -169,12 +288,12 @@
                         <td>${product.name}</td>
                         <td>${product.description}</td>
                         <td>${product.qnt_products}</td>
-                        <td>R$ ${product.price.toFixed(2)}</td>
+                        <td>${formatCurrency(product.price)}</td>
                         <td>
                             <button class="button secondary" onclick="editProduct(${product.id})">
                                 <span class="material-icons">edit</span>
                             </button>
-                            <button class="button" onclick="deleteProduct(${product.id})">
+                            <button class="button delete" onclick="deleteProduct(${product.id})">
                                 <span class="material-icons">delete</span>
                             </button>
                         </td>
@@ -182,8 +301,28 @@
                 `).join('');
             } catch (error) {
                 console.error('Erro ao carregar produtos:', error);
+                const tbody = document.getElementById('products-list');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <div class="empty-state-content error">
+                                <span class="material-icons empty-state-icon">error_outline</span>
+                                <p>Erro ao carregar produtos</p>
+                                <button class="button" onclick="loadProducts()">
+                                    <span class="material-icons">refresh</span>
+                                    Tentar Novamente
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             }
         }
+
+        // Função para navegar para a página de criação
+        window.navigateToCreate = function() {
+            showPage('create-page');
+        };
 
         // Criar produto
         document.getElementById('create-product-form').addEventListener('submit', async (e) => {
@@ -256,8 +395,115 @@
             }
         };
 
+        // Gerenciamento do tema
+        function initTheme() {
+            const themeSwitch = document.getElementById('theme-switch');
+            const themeText = document.getElementById('theme-text');
+            const savedTheme = localStorage.getItem('theme');
+
+            // Aplicar tema salvo
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeSwitch.checked = true;
+                themeText.textContent = 'Tema escuro';
+            }
+
+            // Listener para mudança de tema
+            themeSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeText.textContent = 'Tema escuro';
+                } else {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeText.textContent = 'Tema claro';
+                }
+            });
+        }
+
+        // Função para formatar valores monetários em BRL
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Função para atualizar o resumo
+        async function updateSummary() {
+            try {
+                const products = await ApiService.getAllProducts();
+                if (!products || products.length === 0) {
+                    document.getElementById('total-quantity').textContent = '0 unidades';
+                    document.getElementById('total-value').textContent = 'R$ 0,00';
+                    document.getElementById('summary-list').innerHTML = `
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <div class="empty-state-content">
+                                    <span class="material-icons empty-state-icon">inventory</span>
+                                    <p>Nenhum produto cadastrado</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                // Calcula totais
+                let totalQuantity = 0;
+                let totalValue = 0;
+
+                // Preenche a tabela de detalhamento
+                const summaryHTML = products.map(product => {
+                    const productTotal = product.qnt_products * product.price;
+                    totalQuantity += product.qnt_products;
+                    totalValue += productTotal;
+                    return `
+                        <tr>
+                            <td>${product.name}</td>
+                            <td>${product.qnt_products} un</td>
+                            <td>${formatCurrency(product.price)}</td>
+                            <td>${formatCurrency(productTotal)}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Atualiza os totais
+                document.getElementById('total-quantity').textContent = `${totalQuantity} unidades`;
+                document.getElementById('total-value').textContent = formatCurrency(totalValue);
+                document.getElementById('summary-list').innerHTML = summaryHTML;
+            } catch (error) {
+                console.error('Erro ao carregar resumo:', error);
+                document.getElementById('summary-list').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-state-content error">
+                                <span class="material-icons empty-state-icon">error_outline</span>
+                                <p>Erro ao carregar resumo</p>
+                                <button class="button" onclick="updateSummary()">
+                                    <span class="material-icons">refresh</span>
+                                    Tentar Novamente
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Atualizar resumo quando produtos são modificados
+        const originalLoadProducts = loadProducts;
+        loadProducts = async function() {
+            await originalLoadProducts();
+            await updateSummary();
+        };
+
         // Carregar produtos inicialmente
         loadProducts();
+        initTheme();
     </script>
 </body>
 </html>
